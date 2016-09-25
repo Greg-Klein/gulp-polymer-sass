@@ -1,6 +1,6 @@
 {
   "name": "gulp-polymer-sass",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Write scss directly into your Polymer components",
   "main": "index.js",
   "scripts": {
@@ -15,9 +15,9 @@
   ],
   "author": "Gregory Klein",
   "license": "MIT",
-  "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/Greg-Klein/gulp-polymer-sass.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Greg-Klein/gulp-polymer-sass.git"
   },
   "dependencies": {
     "fs": "0.0.1-security",
