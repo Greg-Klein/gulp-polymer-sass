@@ -11,29 +11,41 @@ var PLUGIN_NAME = 'gulp-polymer-sass';
 var gulpPolymerScss = function gulpPolymerScss(options) {
     return through.obj(function(file, enc, cb) {
 
-        var debug = options.debug || false;
+        var startStyle,
+            endStyle,
+            startInd,
+            endInd,
+            scss = '',
+            contents = '',
+            toReplace = '';
 
-        var startStyle = '<style lang="scss">';
-        var endStyle = "</style>";
-
-        if(debug) {
-            console.log("start index: " + startInd);
-            console.log("end index: " + endInd);
+        var debug = false;
+        if(options) {
+            var debug = options.debug;
         }
 
+        startStyle = "<scss>";
+        endStyle = "</scss>";
+
         var regEx = new RegExp(startStyle, "g");
-        var contents = file.contents.toString();
+        contents = file.contents.toString();
 
         if (!regEx.test(contents)) {
             console.log("No style tag detected");
             return cb();
         }
 
-        var startInd = contents.indexOf(startStyle);
-        var endInd = contents.indexOf(endStyle);
-        var toReplace = contents.substring(startInd, endInd+8);
+        startInd = contents.indexOf(startStyle);
+        endInd = contents.indexOf(endStyle);
 
-        var scss = contents.substring(startInd+19, endInd);
+        if(debug) {
+            console.log("start index: " + startInd);
+            console.log("end index: " + endInd);
+        }
+
+        toReplace = contents.substring(startInd, endInd+7);
+
+        scss = contents.substring(startInd+6, endInd).trim();
 
         if(debug) {
             console.log("scss: " + scss);
@@ -49,13 +61,16 @@ var gulpPolymerScss = function gulpPolymerScss(options) {
             outputStyle: 'compressed'
         }, function (err, compiledScss) {
 
-            //If error or there is no Sass, return null.
-            if (err || !compiledScss)
+            if (err || !compiledScss) {
                 if(debug) {
                     console.log(err);
                 }
                 console.log("Error compiling scss");
+                console.log("Compiled scss: ");
+                console.log(compiledScss.css.toString());
                 return cb();
+            }
+                
             var injectSassContent = "<style>" + compiledScss.css.toString() + "</style>";
 
             file.contents = new Buffer(contents.replace(toReplace, injectSassContent), 'utf8');
