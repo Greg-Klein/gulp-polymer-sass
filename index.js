@@ -8,10 +8,18 @@ var nodeSass = require('node-sass'),
 
 var PLUGIN_NAME = 'gulp-polymer-sass';
 
-var gulpPolymerScss = function gulpSass(options, sync) {
+var gulpPolymerScss = function gulpPolymerScss(options) {
     return through.obj(function(file, enc, cb) {
+
+        var debug = options.debug || false;
+
         var startStyle = '<style lang="scss">';
         var endStyle = "</style>";
+
+        if(debug) {
+            console.log("start index: " + startInd);
+            console.log("end index: " + endInd);
+        }
 
         var regEx = new RegExp(startStyle, "g");
         var contents = file.contents.toString();
@@ -27,6 +35,10 @@ var gulpPolymerScss = function gulpSass(options, sync) {
 
         var scss = contents.substring(startInd+19, endInd);
 
+        if(debug) {
+            console.log("scss: " + scss);
+        }
+
         if (!scss) {
             console.log("No scss detected");
           return cb();
@@ -39,7 +51,10 @@ var gulpPolymerScss = function gulpSass(options, sync) {
 
             //If error or there is no Sass, return null.
             if (err || !compiledScss)
-                console.log(err || "Error compiling scss");
+                if(debug) {
+                    console.log(err);
+                }
+                console.log("Error compiling scss");
                 return cb();
             var injectSassContent = "<style>" + compiledScss.css.toString() + "</style>";
 
