@@ -1,0 +1,25 @@
+{
+  "name": "gulp-polymer-sass",
+  "version": "1.0.0",
+  "description": "Write scss directly into your Polymer components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gulpplugin",
+    "scss",
+    "sass",
+    "polymer",
+    "webcomponent"
+  ],
+  "author": "Gregory Klein",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "map-stream": "0.0.6",
+    "node-sass": "^3.10.0",
+    "path": "^0.12.7",
+    "through2": "^2.0.1"
+  }
+}
