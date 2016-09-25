@@ -17,6 +17,7 @@ var gulpPolymerScss = function gulpSass(options, sync) {
         var contents = file.contents.toString();
 
         if (!regEx.test(contents)) {
+            console.log("No style tag detected");
             return cb();
         }
 
@@ -27,6 +28,7 @@ var gulpPolymerScss = function gulpSass(options, sync) {
         var scss = contents.substring(startInd+19, endInd);
 
         if (!scss) {
+            console.log("No scss detected");
           return cb();
         }
 
@@ -37,6 +39,7 @@ var gulpPolymerScss = function gulpSass(options, sync) {
 
             //If error or there is no Sass, return null.
             if (err || !compiledScss)
+                console.log(err || "Error compiling scss");
                 return cb();
             var injectSassContent = "<style>" + compiledScss.css.toString() + "</style>";
 
