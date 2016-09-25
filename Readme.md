@@ -11,7 +11,7 @@ $ npm install gulp-polymer-sass --save-dev
 ## Usage
 Write scss directly inside your polymer element
 ```html
-<scss>
+<style lang="scss">
 	$main-color: red;
 
 	.test {
@@ -19,7 +19,7 @@ Write scss directly inside your polymer element
 			color: $main-color;
 		}
 	}
-</scss>
+</style>
 ```
 
 Create a Gulp task

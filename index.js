@@ -8,7 +8,7 @@ var nodeSass = require('node-sass'),
 
 var PLUGIN_NAME = 'gulp-polymer-sass';
 
-var gulpPolymerScss = function gulpPolymerScss(options) {
+var gulpPolymerScss = function gulpPolymerScss() {
     return through.obj(function(file, enc, cb) {
 
         var startStyle,
@@ -19,37 +19,23 @@ var gulpPolymerScss = function gulpPolymerScss(options) {
             contents = '',
             toReplace = '';
 
-        var debug = false;
-        if(options) {
-            var debug = options.debug;
-        }
-
-        startStyle = "<scss>";
-        endStyle = "</scss>";
+        startStyle = '<style lang="scss">';
+        endStyle = '</style>';
 
         var regEx = new RegExp(startStyle, "g");
         contents = file.contents.toString();
 
         if (!regEx.test(contents)) {
-            console.log("No style tag detected");
+            console.log("No scss style tag detected");
             return cb();
         }
 
         startInd = contents.indexOf(startStyle);
-        endInd = contents.indexOf(endStyle);
-
-        if(debug) {
-            console.log("start index: " + startInd);
-            console.log("end index: " + endInd);
-        }
+        endInd = contents.substring(startInd, contents.length).indexOf(endStyle);
 
         toReplace = contents.substring(startInd, endInd+7);
 
         scss = contents.substring(startInd+6, endInd).trim();
-
-        if(debug) {
-            console.log("scss: " + scss);
-        }
 
         if (!scss) {
             console.log("No scss detected");
@@ -62,12 +48,7 @@ var gulpPolymerScss = function gulpPolymerScss(options) {
         }, function (err, compiledScss) {
 
             if (err || !compiledScss) {
-                if(debug) {
-                    console.log(err);
-                }
                 console.log("Error compiling scss");
-                console.log("Compiled scss: ");
-                console.log(compiledScss.css.toString());
                 return cb();
             }
                 
