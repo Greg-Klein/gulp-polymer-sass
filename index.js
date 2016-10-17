@@ -3,52 +3,41 @@
 var nodeSass = require('node-sass'),
     path = require('path'),
     fs = require('fs'),
-    map = require('map-stream'),
-    through = require('through2');
+    through = require('through2'),
+    cheerio = require('cheerio');
 
 var PLUGIN_NAME = 'gulp-polymer-sass';
 
 var gulpPolymerScss = function gulpPolymerScss() {
     return through.obj(function(file, enc, cb) {
 
-        var startStyle = '<style lang="scss">';
-        var endStyle = '</style>';
+        var $ = cheerio.load(file.contents.toString());
+        var el = $('style[lang="scss"]');
 
-        var regEx = new RegExp(startStyle, "g");
-        var contents = file.contents.toString();
+        if(el) {
+            var scss = el.text();
 
-        if (!regEx.test(contents)) {
-            return cb(null,file);
-        }
-
-        var startInd = contents.indexOf(startStyle);
-        var aux = contents.substring(startInd);
-        var endInd = aux.indexOf(endStyle) + startInd;
-
-        var toReplace = contents.substring(startInd, endInd+8);
-
-        var scss = contents.substring(startInd+19, endInd).trim();
-
-        if (!scss) {
-            console.log("No scss detected");
-            return cb(null,file);
-        }
-
-        nodeSass.render({
-            data: scss.toString(),
-            outputStyle: 'compressed'
-        }, function (err, compiledScss) {
-
-            if (err || !compiledScss) {
-                console.log("Error compiling scss: " + err);
-                return cb();
+            if (!scss) {
+                return cb(null,file);
             }
-                
-            var injectSassContent = "<style>" + compiledScss.css.toString() + "</style>";
 
-            file.contents = new Buffer(contents.replace(toReplace, injectSassContent), 'utf8');
-            return cb(null,file);
-        });
+            nodeSass.render({
+                data: scss.toString(),
+                outputStyle: 'compressed'
+            }, function (err, compiledScss) {
+
+                if (err || !compiledScss) {
+                    console.log('Error compiling scss: ' + err);
+                    return cb();
+                }
+
+                el.text(compiledScss.css.toString());
+                el.removeAttr('lang');
+
+                file.contents = new Buffer($.html(), 'utf8');
+                return cb(null,file);
+            });
+        }
     });
 }
 
