@@ -4,6 +4,7 @@ var nodeSass = require('node-sass'),
     path = require('path'),
     fs = require('fs'),
     map = require('map-stream'),
+    htmlparser = require('htmlparser2'),
     through = require('through2');
 
 var PLUGIN_NAME = 'gulp-polymer-sass';
@@ -11,11 +12,14 @@ var PLUGIN_NAME = 'gulp-polymer-sass';
 var gulpPolymerScss = function gulpPolymerScss() {
     return through.obj(function(file, enc, cb) {
 
+        var scss;
+        var opened = false;
+        var contents = file.contents.toString();
+
         var startStyle = '<style lang="scss">';
         var endStyle = '</style>';
 
-        var regEx = new RegExp(startStyle, "g");
-        var contents = file.contents.toString();
+        var regEx = new RegExp(startStyle, 'g');
 
         if (!regEx.test(contents)) {
             return cb(null,file);
@@ -30,7 +34,7 @@ var gulpPolymerScss = function gulpPolymerScss() {
         var scss = contents.substring(startInd+19, endInd).trim();
 
         if (!scss) {
-            console.log("No scss detected");
+            console.log('No scss detected');
             return cb(null,file);
         }
 
@@ -40,11 +44,11 @@ var gulpPolymerScss = function gulpPolymerScss() {
         }, function (err, compiledScss) {
 
             if (err || !compiledScss) {
-                console.log("Error compiling scss: " + err);
+                console.log('Error compiling scss: ' + err);
                 return cb();
             }
                 
-            var injectSassContent = "<style>" + compiledScss.css.toString() + "</style>";
+            var injectSassContent = '<style>\n' + compiledScss.css.toString() + '\n</style>';
 
             file.contents = new Buffer(contents.replace(toReplace, injectSassContent), 'utf8');
             return cb(null,file);

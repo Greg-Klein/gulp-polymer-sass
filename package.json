@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "fs": "0.0.1-security",
+    "htmlparser2": "^3.9.1",
     "map-stream": "0.0.6",
     "node-sass": "^3.10.0",
     "path": "^0.12.7",
