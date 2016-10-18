@@ -3,56 +3,41 @@
 var nodeSass = require('node-sass'),
     path = require('path'),
     fs = require('fs'),
-    map = require('map-stream'),
-    htmlparser = require('htmlparser2'),
-    through = require('through2');
+    through = require('through2'),
+    cheerio = require('cheerio');
 
 var PLUGIN_NAME = 'gulp-polymer-sass';
 
 var gulpPolymerScss = function gulpPolymerScss() {
     return through.obj(function(file, enc, cb) {
 
-        var scss;
-        var opened = false;
-        var contents = file.contents.toString();
+        var $ = cheerio.load(file.contents.toString());
+        var el = $('style[lang="scss"]');
 
-        var startStyle = '<style lang="scss">';
-        var endStyle = '</style>';
+        if(el) {
+            var scss = el.text();
 
-        var regEx = new RegExp(startStyle, 'g');
-
-        if (!regEx.test(contents)) {
-            return cb(null,file);
-        }
-
-        var startInd = contents.indexOf(startStyle);
-        var aux = contents.substring(startInd);
-        var endInd = aux.indexOf(endStyle) + startInd;
-
-        var toReplace = contents.substring(startInd, endInd+8);
-
-        var scss = contents.substring(startInd+19, endInd).trim();
-
-        if (!scss) {
-            console.log('No scss detected');
-            return cb(null,file);
-        }
-
-        nodeSass.render({
-            data: scss.toString(),
-            outputStyle: 'compressed'
-        }, function (err, compiledScss) {
-
-            if (err || !compiledScss) {
-                console.log('Error compiling scss: ' + err);
-                return cb();
+            if (!scss) {
+                return cb(null,file);
             }
-                
-            var injectSassContent = '<style>\n' + compiledScss.css.toString() + '\n</style>';
 
-            file.contents = new Buffer(contents.replace(toReplace, injectSassContent), 'utf8');
-            return cb(null,file);
-        });
+            nodeSass.render({
+                data: scss.toString(),
+                outputStyle: 'compressed'
+            }, function (err, compiledScss) {
+
+                if (err || !compiledScss) {
+                    console.log('Error compiling scss: ' + err);
+                    return cb();
+                }
+
+                el.text(compiledScss.css.toString());
+                el.removeAttr('lang');
+
+                file.contents = new Buffer($.html(), 'utf8');
+                return cb(null,file);
+            });
+        }
     });
 }
 
