@@ -41,7 +41,7 @@ var gulpPolymerScss = function gulpPolymerScss(config) {
         return cb(null,file);
       });
     }
-  }.bind(config));
+  });
 };
 
 module.exports = gulpPolymerScss;

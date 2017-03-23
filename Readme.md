@@ -34,6 +34,14 @@ gulp.task('scss', function () {
 });
 ```
 
+You can pass the output style like this:
+```js
+...
+.pipe(polymerScss({outputStyle: 'compressed'}))
+...
+```
+Output style can be **_compressed_**, **_nested_**, **_compact_** or **_expanded_**
+
 Output:
 ```html
 <style>.test h2{color:$main-color}</style>
