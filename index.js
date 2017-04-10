@@ -22,12 +22,11 @@ var gulpPolymerScss = function gulpPolymerScss(config) {
         return cb(null,file);
       }
 
-      var outputStyle = config.outputStyle || 'nested'; // nested, expanded, compact, compressed
+      config.outputStyle = config.outputStyle || 'nested'; // nested, expanded, compact, compressed
 
-      nodeSass.render({
-        data: scss.toString(),
-        outputStyle: outputStyle
-      }, function (err, compiledScss) {
+      config.data = scss.toString();
+
+      nodeSass.render(config, function (err, compiledScss) {
 
         if (err || !compiledScss) {
           console.log('Error compiling scss: ' + err);
