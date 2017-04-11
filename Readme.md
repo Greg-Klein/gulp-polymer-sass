@@ -43,7 +43,7 @@ You can pass the options for Sass like this:
 ...
 ```
 
-Options can be found on the [**node_sass**](https://www.npmjs.com/package/node-sass#options) page.
+Options can be found on the [node-sass page](https://www.npmjs.com/package/node-sass#options).
 
 Example:
 -------------
