@@ -2,6 +2,8 @@
 
 > Compile SCSS code included inside your Polymer element.
 
+[![NPM](https://nodei.co/npm/gulp-polymer-sass.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/gulp-polymer-sass/)
+
 ## Install
 
 ```bash
@@ -34,13 +36,23 @@ gulp.task('scss', function () {
 });
 ```
 
-You can pass the output style like this:
+You can pass the options for Sass like this:
+```js
+...
+.pipe(polymerScss(options))
+...
+```
+
+Options can be found on the [**node_sass**](https://www.npmjs.com/package/node-sass#options) page.
+
+Example:
+-------------
+
 ```js
 ...
 .pipe(polymerScss({outputStyle: 'compressed'}))
 ...
 ```
-Output style can be **_compressed_**, **_nested_**, **_compact_** or **_expanded_**
 
 Output:
 ```html
