@@ -1,6 +1,6 @@
 {
   "name": "gulp-polymer-sass",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Write scss directly into your Polymer components",
   "main": "index.js",
   "scripts": {
