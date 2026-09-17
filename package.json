@@ -22,7 +22,7 @@
   "dependencies": {
     "cheerio": "^0.22.0",
     "fs": "0.0.1-security",
-    "node-sass": "^3.10.0",
+    "node-sass": "^9.0.0",
     "path": "^0.12.7",
     "through2": "^2.0.1"
   }
